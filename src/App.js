@@ -19,7 +19,10 @@ export default function App() {
   const [itemToScroll, setItemToScroll] = useState(false);
 
   useEffect(() => {
-    const getImages = async (imageName, page) => {
+    if (!imageName) {
+      return;
+    }
+    const getImages = async () => {
       setIsLoading(true);
       const data = await imageFinderApi(imageName, page);
       try {
@@ -32,7 +35,8 @@ export default function App() {
         }
 
         const quantityOfPage = data.total / 12;
-        setShowButton(quantityOfPage > page ? true : false);
+
+        quantityOfPage > page ? setShowButton(true) : setShowButton(false);
 
         if (page === 1) {
           setFetchImages(data.hits);
@@ -48,11 +52,16 @@ export default function App() {
         setIsLoading(false);
       }
     };
-    if (!imageName) {
-      return;
-    }
+
     getImages(imageName, page);
   }, [imageName, page]);
+
+  useEffect(() => {
+    document.getElementById(itemToScroll)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }, [itemToScroll]);
 
   const handleFormSubmit = imageName => {
     setImageName(imageName);
@@ -69,11 +78,6 @@ export default function App() {
     setPage(state => state + 1);
     setShowButton(false);
   };
-
-  document.getElementById(itemToScroll)?.scrollIntoView({
-    behavior: 'smooth',
-    block: 'start',
-  });
 
   return (
     <div className="App">
