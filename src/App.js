@@ -76,7 +76,6 @@ export default function App() {
   };
   const loadMoreImages = () => {
     setPage(state => state + 1);
-    setShowButton(false);
   };
 
   return (
